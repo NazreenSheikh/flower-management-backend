@@ -27,8 +27,8 @@ const allUser = async (req, res) => {
             SELECT * FROM users
         `)
 
-        res.json({ users: result[0] })
-    } catch {
+        res.json({ users: result })
+    } catch (err) {
         res.status(404)
         console.log(err)
     }
@@ -104,16 +104,16 @@ const postSignin = async (req, res) => {
         })
     }
     try {
-        const [
-            result,
-            _,
-        ] = await db.query(`SELECT * FROM users where email = ?`, [email])
+        const [result, _] = await db.query(
+            `SELECT * FROM users where email = ?`,
+            [email]
+        )
 
         if (result.length == 0) {
-            const [
-                result,
-                _,
-            ] = await db.query(`SELECT * FROM users where name = ?`, [email])
+            const [result, _] = await db.query(
+                `SELECT * FROM users where name = ?`,
+                [email]
+            )
 
             if (result.length == 0) {
                 return res.json({
@@ -124,7 +124,7 @@ const postSignin = async (req, res) => {
             const login = await bcrypt.compare(password, user.password)
             if (login) {
                 const token = jwt.sign(
-                    { user_id: user.user_id, role: user.userRole },
+                    { user_id: user.user_id, role: user.user_role },
                     JWT_SECRET
                 )
                 const encode = jwt.verify(token, JWT_SECRET)
@@ -142,7 +142,7 @@ const postSignin = async (req, res) => {
             const login = await bcrypt.compare(password, user.password)
             if (login) {
                 const token = jwt.sign(
-                    { user_id: user.user_id, role: user.userRole },
+                    { user_id: user.user_id, role: user.user_role },
                     JWT_SECRET
                 )
                 const encode = jwt.verify(token, JWT_SECRET)

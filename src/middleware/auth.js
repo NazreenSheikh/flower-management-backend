@@ -28,10 +28,9 @@ exports.isAuth = (req, res, next) => {
 }
 
 exports.isAdmin = async (req, res, next) => {
-    let { loggedInUserId } = req.body
-    const reqUser = req.userDetails
+    const reqUserRole = req.userDetails.role
     try {
-        if (reqUser.userRole === 0) {
+        if (reqUserRole === 0) {
             res.status(403).json({ error: 'Access denied' })
         }
         next()
